@@ -1,0 +1,73 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "MEC",
+      "version": "1.0.0",
+      "title": "CAMPI4",
+      "contact": {
+        "email": "agrasagar@gmail.com"
+      },
+      "license": {
+        "name": "MEC",
+        "url": "-"
+      }
+    },
+    "paths": {
+        "/snap/{deviceId}": {
+            "get": {
+                "tags": [
+                  "Take Picture"
+                ],
+                "summary": "Take Picture from Camera connected to PI",
+                "parameters": [
+                    {
+                    "in": "path",
+                    "name": "deviceId",
+                    "required": true,
+                    "description": "Name of video device in PI",
+                    "example": "0",
+                    "schema": {
+                            "type": "string",
+                            "nullable": false
+                        }
+                    },
+                    {
+                    "in": "query",
+                    "name": "imageName",
+                    "required": false,
+                    "description": "name of image that gets attached to response",
+                    "example": "trialImage.jpg",
+                    "schema": {
+                        "type": "string"
+                        }
+                    },
+                    {
+                    "in": "query",
+                    "name": "colorSpace",
+                    "required": false,
+                    "description": "color space option for image",
+                    "example": "RGB",
+                    "enum": ["RGB", "HSV", "YUV"],
+                    "schema": {
+                        "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "512": {
+                        "description": "Failed. Camera not attached to request PI device port."
+                    },
+                    "400": {
+                        "description": "Failed. Bad Request Parameter."
+                    },
+                    "404": {
+                        "description": "Failed. Request not found."
+                    }
+                }
+            }
+        }
+    }
+}        

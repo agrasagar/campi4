@@ -1,24 +1,17 @@
 import argparse
 from flask import Flask
-from flask import Response, request, make_response, send_file, abort
+from flask import Response, request, make_response, send_file, render_template, redirect
+from flask_restplus import Api
+
 from cam import Cam
+from swagger import initialize_swagger
 
 app = Flask(__name__)
-
-apiDesHtml = ("<h1>GET:</h1>"
-        "<h2>/snap/cam_number?:imageName&:colorSpace</h2>"
-        "<p>cam_number (required): is the port where the "
-        "cam in PI is jacked in (possible values = 0, 1, 2 ,3);</p>"
-        "<p>imageName: name of image must have ext .jpg</p>"
-        "<p>colorSpace(opt): supported values are RGB, HSV and YUV</p>"
-        "<p>NOTE: only .jpg images are returned by the camera app</p>"
-        "<h3>example:</h3><p>http://192.168.10.47:5000/snap/0?colorSpace=RGB</p>"
-        "<p>http://192.168.10.47.5000/snap/0?imageName=test_011.jpg</p>"
-        )
+initialize_swagger(app)
 
 @app.route('/')
 def index():
-    return Response(response=apiDesHtml, status=200, content_type='text/html')
+    return redirect('/swagger/', code=302)
 
 @app.route('/snap/<cam_number>', methods=['GET'])
 def get_snap(cam_number):
@@ -28,8 +21,9 @@ def get_snap(cam_number):
                                 , type = str)
     colorSpace = colorSpace.upper()
     if colorSpace not in cam.supported_colorspace:
-        return Response(response="colorSpace {} is not supported".format(colorSpace)
-                    , status=400)
+        return render_template('errors_basic.html'
+                            , code=400
+                            , error="colorSpace {} is not supported".format(colorSpace) )
     status, retStr = cam.take_snap(cam_number, colorSpace)
     if status == "SUCCESS":
         image_filename = retStr

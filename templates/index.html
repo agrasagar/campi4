@@ -1,0 +1,14 @@
+<html>
+<body>
+<h1>CAMPI4</h1>
+<h2>GET:</h2>
+<h3>/snap/cam_number?:imageName&:colorSpace</h3>
+<p>cam_number (required): is the port where the cam in PI is jacked in (possible values = 0, 1, 2 ,3);</p>
+<p>imageName: name of image must have ext .jpg</p>
+<p>colorSpace(opt): supported values are RGB, HSV and YUV</p>
+<p>NOTE: only .jpg images are returned by the camera app</p>
+<h4>example:</h4>
+<p>http://192.168.10.47:5000/snap/0?colorSpace=RGB</p>
+<p>http://192.168.10.47.5000/snap/0?imageName=test_011.jpg</p>
+</body>
+</html>
