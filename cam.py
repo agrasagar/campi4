@@ -1,4 +1,5 @@
 import os
+os.environ['SDL_AUDIODRIVER'] = 'dsp'
 import pygame, sys
 
 from pygame.locals import *
@@ -10,6 +11,7 @@ class Cam:
         self.size = (640, 480)
         self.supported_colorspace = ["RGB", "YUV", "HSV"]
         pygame.init()
+        pygame.font.init()
         pygame.camera.init()
    
     def __snap(self, image_filename, cam_number, colorSpace="RGB"):
@@ -30,6 +32,8 @@ class Cam:
         
     def take_snap(self, cam_number, colorSpace):
         image_filename = "image{}.jpg".format(cam_number)
+        if os.path.exists(image_filename):
+            os.remove(image_filename)
         return self.__snap(image_filename
                         , cam_number
                         , colorSpace)

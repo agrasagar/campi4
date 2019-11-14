@@ -24,11 +24,13 @@
                     "in": "path",
                     "name": "deviceId",
                     "required": true,
-                    "description": "Name of video device in PI",
+                    "description": "Name of video device Id in PI",
                     "example": "0",
                     "schema": {
                             "type": "string",
-                            "nullable": false
+                            "nullable": false,
+                            "enum": [0,2],
+                            "default": "0"
                         }
                     },
                     {
@@ -38,18 +40,20 @@
                     "description": "name of image that gets attached to response",
                     "example": "trialImage.jpg",
                     "schema": {
-                        "type": "string"
+                        "type": "string",
+                        "default": "trialImage0.jpg"
                         }
                     },
                     {
                     "in": "query",
                     "name": "colorSpace",
                     "required": false,
-                    "description": "color space option for image",
+                    "description": "Color space option for image",
                     "example": "RGB",
-                    "enum": ["RGB", "HSV", "YUV"],
                     "schema": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": ["RGB", "HSV", "YUV"],
+                        "default": "RGB"
                         }
                     }
                 ],

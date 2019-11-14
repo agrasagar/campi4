@@ -5,8 +5,6 @@ from flask import Response, request, make_response, send_file, render_template, 
 from cam import Cam
 from swagger import initialize_swagger
 
-APP_IP=''
-APP_PORT=''
 
 app = Flask(__name__)
 initialize_swagger(app)
@@ -17,14 +15,10 @@ def index():
 
 @app.route('/snap/<cam_number>', methods=['GET'])
 def get_snap(cam_number):
-    global APP_IP
-    global APP_PORT
-    if int(cam_number) not in range(0,10):
+    if not cam_number.isdigit() or int(cam_number) not in range(0,20):
         return render_template('errors_basic.html'
                             , code=400
-                            , error="Video device id not supported".format(cam_number)
-                            , ip=APP_IP
-                            , port=APP_PORT )
+                            , error="Video device id {} not supported".format(cam_number))
     cam = Cam("mecCam")
     colorSpace = request.args.get('colorSpace'
                                 , default="RGB"
@@ -33,9 +27,7 @@ def get_snap(cam_number):
     if colorSpace not in cam.supported_colorspace:
         return render_template('errors_basic.html'
                             , code=400
-                            , error="colorSpace {} is not supported".format(colorSpace)
-                            , ip=APP_IP
-                            , port=APP_PORT )
+                            , error="colorSpace {} is not supported".format(colorSpace))
     status, retStr = cam.take_snap(cam_number, colorSpace)
     if status == "SUCCESS":
         image_filename = retStr
@@ -46,11 +38,12 @@ def get_snap(cam_number):
             error_str="Only .jpg image can be expected."
             error_code = 400
             response = make_response(render_template('errors_basic.html'
-                            , error=error_str, ip=APP_IP, port=APP_PORT), error_code)
+                            , error=error_str), error_code)
         else:
             response = make_response(send_file( image_filename
                                     , as_attachment=True
-                                    , attachment_filename=attachment_name), 200)
+                                    , attachment_filename=attachment_name
+                                    , cache_timeout=0), 200)
     else:
         if "Cannot identify" in retStr:
             error_str="Camera is not on PI port {}.".format(cam_number)
@@ -64,7 +57,7 @@ def get_snap(cam_number):
         else:
             error_str = retStr
             error_code = 500
-        rendered = render_template('errors_basic.html', error=error_str, ip=APP_IP, port=APP_PORT)
+        rendered = render_template('errors_basic.html', error=error_str)
         response = make_response(rendered, error_code)
     return response
 
@@ -74,6 +67,4 @@ if __name__ == '__main__':
     ap.add_argument("-i", help="ip for the app", default="0.0.0.0", type=str)
     ap.add_argument("-p",  help= "port for the app", default=5994, type=int)
     args = vars(ap.parse_args())
-    APP_IP = args['i']
-    APP_PORT= int(args['p'])
-    app.run(debug=True, port=APP_PORT, host=APP_IP)
+    app.run(debug=False, port=int(args['p']), host=args['i'])
