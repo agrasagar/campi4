@@ -6,3 +6,4 @@ MarkupSafe==1.1.1
 numpy==1.13.3
 pygame===1.9.1release
 Werkzeug==0.16.0
+flask-swagger-ui==3.20.9

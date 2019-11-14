@@ -19,6 +19,12 @@ def index():
 def get_snap(cam_number):
     global APP_IP
     global APP_PORT
+    if int(cam_number) not in range(0,10):
+        return render_template('errors_basic.html'
+                            , code=400
+                            , error="Video device id not supported".format(cam_number)
+                            , ip=APP_IP
+                            , port=APP_PORT )
     cam = Cam("mecCam")
     colorSpace = request.args.get('colorSpace'
                                 , default="RGB"
